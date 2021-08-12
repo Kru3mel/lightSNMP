@@ -11,21 +11,18 @@ using SnmpSharpNet;
 
 namespace lightSNMP
 {
-    class Program
-    {        
+    public class Program
+    {               
         static void Main(string[] args)
         {
-            UDPListener();
-
-            while (true)
-            {
-                Console.WriteLine(DateTime.Now);
-                Thread.Sleep(10000);
-            }
-            
+            MBSecure mbSecure = new MBSecure("10.2.10.99", "read", "write");
+            mbSecure.ResetInput();
+            StartUDPListener(mbSecure);
+            //mBSecure.SetInput(1, 0);
+            Console.Read();
         }
 
-        static void UDPListener()
+        static void StartUDPListener(MBSecure mbSecure)
         {            
             Task.Run(() =>
             {
@@ -41,9 +38,22 @@ namespace lightSNMP
                         SnmpV2Packet packet = new SnmpV2Packet();
                         packet.decode(receivedBytes, receivedBytes.Length);
                         Console.WriteLine(packet.ToString());
+
+                        if (packet.IsNotification && packet.Pdu.Type == PduType.V2Trap)
+                        {
+                            Task.Run(() => TrapHandler(packet,mbSecure));
+                        }
                     }
                 }
             });
+        }
+
+        static void TrapHandler(SnmpV2Packet packet, MBSecure mbSecure)
+        {
+            AxisCamera camera = new AxisCamera();
+            if (camera.parseTrap(packet)){
+                mbSecure.SetInput(camera.KameraID, 1);
+            }
         }
     }
 }
