@@ -114,6 +114,11 @@ namespace lightSNMP
             }
         }
 
+        /// <summary>
+        /// Creates and sends a SNMP- Packet to the MBSecure to set a certain Input
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="value"></param>
         public void SetInput(int number, int value)
         {
             Oid temp = new Oid(oidInput);
@@ -132,21 +137,32 @@ namespace lightSNMP
             Console.WriteLine(snmpV2Packet.ToString());
         }
 
+        /// <summary>
+        /// Creates and sends a SNMP- Packet to reset any set Inputs
+        /// </summary>
         public void ResetInput()
         {
+            Console.WriteLine("Reseting Inputs");
             for(int i=0; i<2; i++)
             {
-                Oid temp = new Oid(oidInput);
-                //OID for inputRelease
-                temp.Add(3);
-                //OID for inpuReleaseIndex
-                temp.Add(i+1);
-                Debug.WriteLine(temp.ToString(), "=0");
-                //Create a SNMP- Byte Array containing OID and Value
-                byte[] packet = createSnmpSet(temp.ToString(), 0).encode();
-                //Send the SNMP- Byte Array
-                SendUDPPacket(packet);
-            }
+                try
+                {
+                    Oid temp = new Oid(oidInput);
+                    //OID for inputRelease
+                    temp.Add(3);
+                    //OID for inputReleaseIndex
+                    temp.Add(i + 1);
+                    Debug.WriteLine(temp.ToString(), "=0");
+                    //Create a SNMP- Byte Array containing OID and Value
+                    byte[] packet = createSnmpSet(temp.ToString(), 0).encode();
+                    //Send the SNMP- Byte Array
+                    SendUDPPacket(packet);
+                }
+                catch
+                {
+                    Console.WriteLine("Could not reset input: " + (i + 1));
+                }
+            }            
         }
     }
 }
