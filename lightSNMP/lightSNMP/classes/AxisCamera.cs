@@ -61,7 +61,7 @@ namespace lightSNMP
                 AlarmName = packet.Pdu.VbList[1].Value.ToString();
                 AlarmText = packet.Pdu.VbList[2].Value.ToString();
 
-                string cameraNumber = new string(AlarmText.Where(Char.IsDigit).ToArray());
+                string cameraNumber = new string(AlarmName.Where(Char.IsDigit).ToArray());
                 KameraID = int.Parse(cameraNumber);
 
                 return true;
