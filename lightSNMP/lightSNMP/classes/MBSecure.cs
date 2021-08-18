@@ -138,31 +138,23 @@ namespace lightSNMP
         }
 
         /// <summary>
-        /// Creates and sends a SNMP- Packet to reset any set Inputs
+        /// Resets every input in range of inputCount
         /// </summary>
-        public void ResetInput()
+        /// <param name="inputCount"></param>
+        public void ResetInputs(int inputCount)
         {
             Console.WriteLine("Reseting Inputs");
-            for(int i=0; i<2; i++)
+            for(int i = 0; i < inputCount; i++)
             {
                 try
                 {
-                    Oid temp = new Oid(oidInput);
-                    //OID for inputRelease
-                    temp.Add(3);
-                    //OID for inputReleaseIndex
-                    temp.Add(i + 1);
-                    Debug.WriteLine(temp.ToString(), "=0");
-                    //Create a SNMP- Byte Array containing OID and Value
-                    byte[] packet = createSnmpSet(temp.ToString(), 0).encode();
-                    //Send the SNMP- Byte Array
-                    SendUDPPacket(packet);
+                    SetInput(i + 1, 0);
                 }
                 catch
                 {
-                    Console.WriteLine("Could not reset input: " + (i + 1));
+                    Console.WriteLine("Could not reset input: " + (i+1));
                 }
-            }            
+            }      
         }
     }
 }
