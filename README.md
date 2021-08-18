@@ -10,7 +10,7 @@ In its current implementation it is able to use the traps sent from a Axis Commu
 * .NET Framework 4.8 or higher
 ## Axis Camera Settings
 In order to be able to use the traps sent from a Axis camera the alarm event configuration has to match the parameters from the follwing table.
-The configuration can be done using the cameras webinterface. To add an Event Handeler navigate to → System → Events → Add Event (:heavy_plus_sign:)
+The configuration can be done using the cameras webinterface. To add the required Event Handler navigate to → System → Events → Add Event (:heavy_plus_sign:)
 |Event Name|Condition|Use Condition as Trigger|feature|enabled|Action|Alarm Name|Alarm Notification|
 |---|---|---|---|---|---|---|---|
 |Alarm On|AXISPerimterDefender|:white_check_mark:|ALL_SENARIOS|:white_check_mark:|Send SNMP-Trap|Intrusion Camera xx|true|
