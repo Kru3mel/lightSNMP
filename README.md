@@ -16,7 +16,7 @@ The configuration can be done using the cameras webinterface. To set up SNMP nav
 |---|---|---|---|---|---|---|
 |v1 and v2c|*read*|*write*|✅|Device-IP|*trap*|all ⬜|
 
-All terms written in italics can be chosen freely and won't affect this program.
+All terms written in italics can be chosen freely and won't affect the functionality.
 ### Event Settings
 In order to be able to use the traps sent from a Axis camera the alarm event configuration has to match the parameters from the follwing table.
 The configuration can be done using the cameras webinterface. To add the required Event Handler navigate to → System → Events → Add Event (:heavy_plus_sign:)
