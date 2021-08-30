@@ -10,7 +10,6 @@ using System.Net.Sockets;
 using SnmpSharpNet;
 
 using System.Configuration;
-using System.Collections.Specialized;
 
 namespace lightSNMP
 {
