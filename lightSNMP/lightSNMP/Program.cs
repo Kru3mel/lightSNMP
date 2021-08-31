@@ -37,37 +37,45 @@ namespace lightSNMP
         {            
             Task.Run(() =>
             {
-                //Start UPD (SNMP) Listerner on port 162 in new Tread
-                using(UdpClient client = new UdpClient(162))
+                Console.WriteLine("Task starting");
+                try
                 {
-                    Console.WriteLine("Listening");
-                    while (true)
+                    //Start UPD (SNMP) Listerner on port 162 in new Tread
+                    using (UdpClient client = new UdpClient(1620))
                     {
-                        IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 162);
-                        byte[] receivedBytes = client.Receive(ref endPoint);
-
-                        //Write IP Address from packet sender to consol
-                        Console.WriteLine(endPoint.Address);
-
-                        try
+                        Console.WriteLine("Listening");
+                        while (true)
                         {
-                            //Decode received packet
-                            SnmpV2Packet packet = new SnmpV2Packet();
-                            packet.decode(receivedBytes, receivedBytes.Length);
-                            //Write decodes packet to consol
-                            Console.WriteLine(packet.ToString());
+                            IPEndPoint endPoint = new IPEndPoint(IPAddress.Any, 1620);
+                            byte[] receivedBytes = client.Receive(ref endPoint);
 
-                            //start Trap Handler in seperat thread if received packet is a SNMPV2 Trap
-                            if (packet.IsNotification && packet.Pdu.Type == PduType.V2Trap)
+                            //Write IP Address from packet sender to consol
+                            Console.WriteLine(endPoint.Address);
+
+                            try
                             {
-                                Task.Run(() => TrapHandler(packet, mbSecure));
+                                //Decode received packet
+                                SnmpV2Packet packet = new SnmpV2Packet();
+                                packet.decode(receivedBytes, receivedBytes.Length);
+                                //Write decodes packet to consol
+                                Console.WriteLine(packet.ToString());
+
+                                //start Trap Handler in seperat thread if received packet is a SNMPV2 Trap
+                                if (packet.IsNotification && packet.Pdu.Type == PduType.V2Trap)
+                                {
+                                    Task.Run(() => TrapHandler(packet, mbSecure));
+                                }
+                            }
+                            catch
+                            {
+                                Console.WriteLine("Could not decode packet");
                             }
                         }
-                        catch
-                        {
-                            Console.WriteLine("Could not decode packet");
-                        }
                     }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
                 }
             });
         }
