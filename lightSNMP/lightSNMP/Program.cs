@@ -25,7 +25,8 @@ namespace lightSNMP
 
             //initialise mbsecure object
             MBSecure mbSecure = new MBSecure(ip, readCommunity, writeCommunity);
-            mbSecure.ResetInputs(2);
+
+            mbSecure.ResetInputs(40);
 
             //Start UDP-Listener in seperat Thread
             StartUDPListener(mbSecure);
@@ -35,8 +36,6 @@ namespace lightSNMP
 
         static void StartUDPListener(MBSecure mbSecure)
         {            
-            Task.Run(() =>
-            {
                 Console.WriteLine("Task starting");
                 try
                 {
@@ -77,7 +76,6 @@ namespace lightSNMP
                 {
                     Console.WriteLine(e.Message);
                 }
-            });
         }
         
         static void TrapHandler(SnmpV2Packet packet, MBSecure mbSecure)
@@ -86,13 +84,24 @@ namespace lightSNMP
             AxisCamera camera = new AxisCamera();
             //set corresponding input in MBSecure if trap signals alarm
             if (camera.parseTrap(packet)){
-                if(camera.AlarmText == "true")
+                try
                 {
-                    mbSecure.SetInput(camera.KameraID, 1);
+                    if (camera.AlarmText == "true")
+                    {
+                        mbSecure.SetInput(camera.KameraID, 1);
+                    }
+                    else
+                    {
+                        mbSecure.SetInput(camera.KameraID, 0);
+                    }
                 }
-                else
+                catch(SocketException ex)
                 {
-                    mbSecure.SetInput(camera.KameraID, 0);
+                    Console.WriteLine(ex.Message);
+                }
+                catch
+                {
+                    Console.WriteLine("Could not set Input");
                 }
             }
         }
