@@ -8,6 +8,8 @@ using System.Diagnostics;
 
 using System.Net;
 using SnmpSharpNet;
+using System.Net.NetworkInformation;
+using System.Threading;
 
 namespace lightSNMP
 {
@@ -23,7 +25,7 @@ namespace lightSNMP
             WriteCommunity = writeCommunity;
 
             client = new UdpClient(10000);
-            //clientSend = new UdpClient(9999);
+            client.Client.ReceiveTimeout = 2000;
         }
 
         /// <summary>
@@ -143,6 +145,11 @@ namespace lightSNMP
         /// <param name="inputCount"></param>
         public void ResetInputs(int inputCount)
         {
+            Console.WriteLine("Waiting for Panel State");
+            while (!CheckPanelState())
+            {
+
+            }
             Console.WriteLine("Reseting Inputs");
             for(int i = 0; i < inputCount; i++)
             {
@@ -155,6 +162,46 @@ namespace lightSNMP
                     Console.WriteLine("Could not reset input: " + (i+1));
                 }
             }      
+        }
+        /// <summary>
+        /// Used to assue that the MBSecure is online and able to process requests
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckPanelState()
+        {
+            try
+            {
+                //Create SNMP- GET Packet to Get the Panel State
+                var getStatePacket = createSnmpGet(".1.3.6.1.4.1.48689.1.1.1.0").encode();
+
+                //Send the created Packet
+                getStatePacket = SendUDPPacket(getStatePacket);
+
+                //Decode the received Paket
+                SnmpV2Packet packet = new SnmpV2Packet();
+                packet.decode(getStatePacket, getStatePacket.Length);
+
+                //Extract the value of the Panel State
+                int state = int.Parse(packet.Pdu.VbList[0].Value.ToString());
+                Console.WriteLine("Panel State: " + state);
+
+                //Only return true if Panel State is Ready(0)
+                if (state == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Panel not Ready");
+                    return false;
+                }
+            }
+            //Catch Socket and SNMP Exceptions
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
         }
     }
 }
