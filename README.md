@@ -1,7 +1,7 @@
 # lightSNMP
 ## Description
 A lightweight SNMP Network Management Station able to receive traps, send GET and SET Requests.
-In its current implementation it is able to use the traps sent from a Axis Communications Camera running the Axis Perimeter Defender to be used a virtual inputs for the intrusion alarm control MBSecure from Honeywell with a SNMP- License.
+In its current implementation it is able to use the traps sent from a Axis Communications Camera running the Axis Perimeter Defender as virtual inputs for the intrusion alarm control MBSecure from Honeywell with a SNMP- License.
 ## Prerequisites
 * Axis Camera
 * Axis Perimeter Defender Licens for the camera
