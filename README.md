@@ -4,7 +4,7 @@ A lightweight software defined SNMP Network Management Station able to receive t
 In its current implementation it is able to use the traps sent from a Axis Communications Camera running the Axis Perimeter Defender as virtual inputs for the intrusion alarm control MBSecure from Honeywell with a SNMP- License.
 ## Prerequisites
 * Axis Camera
-* Axis Perimeter Defender Licens for the camera
+* Axis Perimeter Defender licence for the camera
 * Honeywell MBSecure intrusion alarm control
 * SNMP extension license
 * .NET Framework 4.8 or higher
